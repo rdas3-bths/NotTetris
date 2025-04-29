@@ -14,10 +14,6 @@ public class BrickLayout {
         brickLayout = new int[30][cols];
     }
 
-    public ArrayList<Brick> getBricksOnGrid() {
-        return bricksOnGrid;
-    }
-
     public void addBrick(Brick b) {
         bricks.add(b);
     }
@@ -28,9 +24,10 @@ public class BrickLayout {
             // brick is falling
 
             if (b.getRow() < 29 && canFitOnRow(b.getRow()+1, b, brickLayout)) {
-                for (int c = b.getStart(); c <= b.getEnd(); c++) {
-                    brickLayout[b.getRow()][c] = 0;
-                    brickLayout[b.getRow()+1][c] = 1;
+                //for (int c = b.getStart(); c <= b.getEnd(); c++) {
+                for (Block block : b.getBlocks()) {
+                    brickLayout[block.getRow()][block.getCol()] = 0;
+                    brickLayout[block.getRow()+1][block.getCol()] = 1;
                 }
                 b.setRow(b.getRow()+1);
             }
@@ -61,25 +58,6 @@ public class BrickLayout {
         return true;
     }
 
-    public void makeNextBrickFall() {
-        if (bricks.size() != 0) {
-            Brick b = bricks.remove(0);
-            for (int r = 0; r < brickLayout.length; r++) {
-                boolean currentRow = canFitOnRow(r, b, brickLayout);
-                boolean rowBelow = canFitOnRow(r + 1, b, brickLayout);
-                if (currentRow && !rowBelow) {
-                    for (int c = b.getStart(); c <= b.getEnd(); c++) {
-                        b.setRow(r);
-                        brickLayout[r][c] = 1;
-                    }
-                    break;
-                }
-            }
-            bricksOnGrid.add(b);
-        }
-
-    }
-
     public boolean canFitOnRow(int row, Brick b, int[][] grid) {
         if (row > grid.length-1) {
             return false;
@@ -90,15 +68,6 @@ public class BrickLayout {
             }
         }
         return true;
-    }
-
-    public void printBrickLayout() {
-        for (int r = 0; r < brickLayout.length; r++) {
-            for (int c = 0; c < brickLayout[0].length; c++) {
-                System.out.print(brickLayout[r][c] + " ");
-            }
-            System.out.println();
-        }
     }
 
     public boolean checkBrickSpot(int r, int c) {
@@ -122,15 +91,18 @@ public class BrickLayout {
 
     public void moveBrickHorizontal(String direction) {
         Brick b = getCurrentlyFallingBrick();
-        for (int i = b.getStart(); i <= b.getEnd(); i++) {
-            brickLayout[b.getRow()][i] = 0;
+
+        for (Block block : b.getBlocks()) {
+            brickLayout[block.getRow()][block.getCol()] = 0;
         }
+
         if (direction.equals("left") && b.getStart() > 0)
             b.moveLeft();
         if (direction.equals("right") && b.getEnd() < brickLayout[0].length-2)
             b.moveRight();
-        for (int i = b.getStart(); i <= b.getEnd(); i++) {
-            brickLayout[b.getRow()][i] = 1;
+
+        for (Block block : b.getBlocks()) {
+            brickLayout[block.getRow()][block.getCol()] = 1;
         }
     }
 }

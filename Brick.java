@@ -1,24 +1,42 @@
+import java.util.ArrayList;
+
 public class Brick {
     private int start;
     private int end;
     private int row;
     private boolean falling;
+    private ArrayList<Block> blocks;
 
     public Brick(int start, int end) {
         this.start = start;
         this.end = end;
         this.row = -1;
         falling = true;
+        blocks = new ArrayList<Block>();
+        for (int c = start; c <= end; c++) {
+            Block b = new Block(row, c);
+            blocks.add(b);
+        }
     }
 
     public void moveLeft() {
-        start--;
-        end--;
+
+        for (int i = 0; i < blocks.size(); i++) {
+            int currentCol = blocks.get(i).getCol();
+            blocks.get(i).setCol(currentCol-1);
+        }
     }
 
     public void moveRight() {
-        start++;
-        end++;
+
+        for (int i = 0; i < blocks.size(); i++) {
+            int currentCol = blocks.get(i).getCol();
+            blocks.get(i).setCol(currentCol+1);
+        }
+    }
+
+    public ArrayList<Block> getBlocks() {
+        return blocks;
     }
 
     public int getStart() {
@@ -39,6 +57,9 @@ public class Brick {
 
     public void setRow(int row) {
         this.row = row;
+        for (int i = 0; i < blocks.size(); i++) {
+            blocks.get(i).setRow(row);
+        }
     }
 
     public int getEnd() {
