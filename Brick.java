@@ -6,10 +6,12 @@ public class Brick {
     private int row;
     private boolean falling;
     private ArrayList<Block> blocks;
+    private int blockType;
 
     public Brick(int start, int end) {
         this.start = start;
         this.end = end;
+        blockType = end - start;
         this.row = -1;
         falling = true;
         blocks = new ArrayList<Block>();
@@ -17,6 +19,10 @@ public class Brick {
             Block b = new Block(row, c);
             blocks.add(b);
         }
+    }
+
+    public int getBlockType() {
+        return blockType;
     }
 
     public void moveLeft() {

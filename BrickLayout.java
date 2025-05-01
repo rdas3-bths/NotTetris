@@ -21,13 +21,18 @@ public class BrickLayout {
     public void moveBricksDown() {
 
         for (Brick b : bricksOnGrid) {
-            // brick is falling
 
             if (b.getRow() < 29 && canFitOnRow(b.getRow()+1, b, brickLayout)) {
-                //for (int c = b.getStart(); c <= b.getEnd(); c++) {
                 for (Block block : b.getBlocks()) {
                     brickLayout[block.getRow()][block.getCol()] = 0;
                     brickLayout[block.getRow()+1][block.getCol()] = 1;
+
+                    if (b.getBlockType() == 1) {
+                        brickLayout[block.getRow()][block.getCol()] = 1;
+                        if (block.getRow() > 0) {
+                            brickLayout[block.getRow()-1][block.getCol()] = 0;
+                        }
+                    }
                 }
                 b.setRow(b.getRow()+1);
             }
@@ -62,8 +67,9 @@ public class BrickLayout {
         if (row > grid.length-1) {
             return false;
         }
-        for (int i = b.getStart(); i <= b.getEnd(); i++) {
-            if (grid[row][i] != 0) {
+
+        for (Block block : b.getBlocks()) {
+            if (grid[row][block.getCol()] != 0) {
                 return false;
             }
         }
@@ -94,6 +100,11 @@ public class BrickLayout {
 
         for (Block block : b.getBlocks()) {
             brickLayout[block.getRow()][block.getCol()] = 0;
+            if (b.getBlockType() == 1) {
+                if (block.getRow() > 0) {
+                    brickLayout[block.getRow()-1][block.getCol()] = 0;
+                }
+            }
         }
 
         if (direction.equals("left") && b.getStart() > 0)
@@ -103,6 +114,11 @@ public class BrickLayout {
 
         for (Block block : b.getBlocks()) {
             brickLayout[block.getRow()][block.getCol()] = 1;
+            if (b.getBlockType() == 1) {
+                if (block.getRow() > 0) {
+                    brickLayout[block.getRow()-1][block.getCol()] = 1;
+                }
+            }
         }
     }
 }
