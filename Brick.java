@@ -33,6 +33,24 @@ public class Brick {
         }
     }
 
+    public boolean checkIfBorderingLeft() {
+        for (int i = 0; i < blocks.size(); i++) {
+            if (blocks.get(i).getCol() == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfBorderingRight(int cols) {
+        for (int i = 0; i < blocks.size(); i++) {
+            if (blocks.get(i).getCol() == cols-1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void moveRight() {
 
         for (int i = 0; i < blocks.size(); i++) {

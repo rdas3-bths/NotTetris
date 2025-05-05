@@ -12,9 +12,10 @@ public class DrawPanel extends JPanel implements KeyListener {
     private final double INTERVAL = .10;
     private final double BRICK_FALL_INTERVAL = 1;
     private boolean brickFalling;
+    private final int COLUMNS = 10;
 
     public DrawPanel() {
-        brickGrid = new BrickLayout(40);
+        brickGrid = new BrickLayout(COLUMNS);
         brickFallCounter = System.currentTimeMillis();
         brickAddCounter = System.currentTimeMillis();
         start = false;
@@ -31,7 +32,7 @@ public class DrawPanel extends JPanel implements KeyListener {
         if (brickAddTime > BRICK_FALL_INTERVAL) {
             brickAddCounter = System.currentTimeMillis();
             int length = (int)(Math.random()*2)+1;
-            int start = (int)(Math.random()*35);
+            int start = (int)(Math.random()*8);
             Brick b = new Brick(start, start+length);
             brickGrid.addBrick(b);
         }
@@ -39,9 +40,9 @@ public class DrawPanel extends JPanel implements KeyListener {
         super.paintComponent(g);
         int y = 5;
 
-        for (int r = 0; r < 30; r++) {
+        for (int r = 0; r < 24; r++) {
             int x = 5;
-            for (int c = 0; c < 39; c++) {
+            for (int c = 0; c < COLUMNS; c++) {
                 g.drawRect(x, y, 20, 20);
                 if (brickGrid.checkBrickSpot(r, c)) {
                     Graphics2D g2 = (Graphics2D) g;

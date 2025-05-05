@@ -11,7 +11,7 @@ public class BrickLayout {
         this.cols = cols;
         bricks = new ArrayList<Brick>();
         bricksOnGrid = new ArrayList<Brick>();
-        brickLayout = new int[30][cols];
+        brickLayout = new int[24][cols];
     }
 
     public void addBrick(Brick b) {
@@ -107,9 +107,9 @@ public class BrickLayout {
             }
         }
 
-        if (direction.equals("left") && b.getStart() > 0)
+        if (direction.equals("left") && !b.checkIfBorderingLeft())
             b.moveLeft();
-        if (direction.equals("right") && b.getEnd() < brickLayout[0].length-2)
+        if (direction.equals("right") && !b.checkIfBorderingRight(cols))
             b.moveRight();
 
         for (Block block : b.getBlocks()) {
