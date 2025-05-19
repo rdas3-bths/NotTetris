@@ -35,8 +35,9 @@ public class DrawPanel extends JPanel implements KeyListener {
         double brickAddTime = (System.currentTimeMillis() - brickAddCounter) / 1000.0;
         if (brickAddTime > BRICK_FALL_INTERVAL) {
             brickAddCounter = System.currentTimeMillis();
-            int length = (int)(Math.random()*3)+1;
+            int length = (int)(Math.random()*3);
             int start = (int)(Math.random()*7);
+            System.out.println(start + " " + (start+length));
             Brick b = new Brick(start, start+length);
             brickGrid.addBrick(b);
         }
