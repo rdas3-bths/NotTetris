@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class NotTetrisEngine {
+    private int dropInterval = 1000;
+    private int rowsCleared;
     private final Point[][][] blockTypes = {
             // I-Piece
             {
@@ -67,6 +69,25 @@ public class NotTetrisEngine {
     private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
 
     private Color[][] grid;
+
+    public int getDropInterval() {
+        return dropInterval;
+    }
+
+    public int getRowsCleared() {
+        return rowsCleared;
+    }
+
+    public int getLevel() {
+        return (rowsCleared / 10) + 1;
+    }
+
+    public void decreaseDropInterval() {
+        if (dropInterval > 0) {
+            dropInterval -= 100;
+        }
+
+    }
 
     public Color[][] getGrid() {
         return grid;
@@ -138,7 +159,6 @@ public class NotTetrisEngine {
         }
     }
 
-    // Drops the piece one line or fixes it to the well if it can't drop
     public boolean dropDown() {
         if (collidesAt(pieceOrigin.x, pieceOrigin.y + 1, rotation)) {
             pieceOrigin.y += 1;
@@ -174,6 +194,7 @@ public class NotTetrisEngine {
                 grid[i][j+1] = grid[i][j];
             }
         }
+        rowsCleared++;
     }
 
     public void clearRows() {

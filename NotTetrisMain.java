@@ -6,33 +6,46 @@ public class NotTetrisMain {
     public static void main(String[] args) {
         JFrame f = new JFrame("Not Tetris");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(12 * 26 + 10, 26 * 23 + 25);
+        f.setSize(12 * 26 + 10 + 200, 26 * 23 + 25);
+        f.setLocation(500, 100);
+
+        NotTetris game = new NotTetris();
+        f.add(game);
         f.setVisible(true);
 
-        final NotTetris game = new NotTetris();
-        f.add(game);
-
-        // Keyboard controls
         f.addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) {
             }
 
             public void keyPressed(KeyEvent e) {
+
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_W:
-                        game.sendRotate(-1);
+                        if (!game.isPaused())
+                            game.sendRotate(-1);
                         break;
                     case KeyEvent.VK_S:
-                        game.sendRotate(+1);
+                        if (!game.isPaused())
+                            game.sendRotate(+1);
                         break;
                     case KeyEvent.VK_A:
-                        game.sendMove(-1);
+                        if (!game.isPaused())
+                            game.sendMove(-1);
                         break;
                     case KeyEvent.VK_D:
-                        game.sendMove(+1);
+                        if (!game.isPaused())
+                            game.sendMove(+1);
                         break;
                     case KeyEvent.VK_SPACE:
-                        game.doFullDrop();
+                        if (!game.isPaused())
+                            game.doFullDrop();
+                        break;
+                    case KeyEvent.VK_ALT:
+                        if (!game.isPaused())
+                            game.singleDrop();
+                        break;
+                    case KeyEvent.VK_ESCAPE:
+                        game.togglePause();
                         break;
                 }
             }
@@ -41,16 +54,18 @@ public class NotTetrisMain {
             }
         });
 
-        // Make the falling piece drop every second
         new Thread() {
             @Override
             public void run() {
+                long currentTime = System.currentTimeMillis();
                 while (true) {
-                    try {
-                        Thread.sleep(1000);
-                        game.singleDrop();
-                    } catch (InterruptedException e) {
-                    }
+                        long elapsedTime = System.currentTimeMillis() - currentTime;
+                        if (elapsedTime > game.getGameDropInterval()) {
+                            if (!game.isPaused()) {
+                                game.singleDrop();
+                            }
+                            currentTime = System.currentTimeMillis();
+                        }
                 }
             }
         }.start();

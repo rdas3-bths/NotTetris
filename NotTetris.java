@@ -1,15 +1,28 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 import javax.swing.JPanel;
 
 public class NotTetris extends JPanel {
 
     private NotTetrisEngine game = new NotTetrisEngine();
+    private boolean paused;
 
     public NotTetris() {
         super();
+        paused = true;
         game.init();
+    }
+
+    public int getGameDropInterval() {
+        return game.getDropInterval();
+    }
+
+    public void togglePause() {
+        paused = !paused;
+        repaint();
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     public void sendRotate(int i) {
@@ -53,6 +66,7 @@ public class NotTetris extends JPanel {
     @Override
     public void paintComponent(Graphics g)
     {
+        super.paintComponent(g);
         g.fillRect(0, 0, 26*12, 26*23);
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
@@ -64,5 +78,22 @@ public class NotTetris extends JPanel {
         g.setColor(Color.WHITE);
 
         drawPiece(g);
+
+        if (paused) {
+            Graphics2D g2 = (Graphics2D)g;
+            g2.setColor(Color.BLACK);
+            g.drawRect(100, 270, 100, 50);
+            g2.setColor(Color.GRAY);
+            g2.fillRect(100, 270, 100, 50);
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Courier New", 1, 15));
+            g.drawString("PAUSED", 125, 300);
+        }
+
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setFont(new Font("Courier New", 1, 15));
+        g2.setColor(Color.BLACK);
+        g.drawString("Level: " + game.getLevel(), 320, 50);
+        g.drawString("Rows cleared: " + game.getRowsCleared(), 320, 70);
     }
 }
