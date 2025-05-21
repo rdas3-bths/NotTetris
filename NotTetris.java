@@ -5,11 +5,23 @@ public class NotTetris extends JPanel {
 
     private NotTetrisEngine game = new NotTetrisEngine();
     private boolean paused;
+    private int[][] blockPreview;
 
     public NotTetris() {
         super();
         paused = true;
         game.init();
+        blockPreview = new int[4][4];
+    }
+
+    public void setNextPiece() {
+        blockPreview = new int[4][4];
+        Point[] next = game.getNextPiece();
+        for (Point p : next) {
+            int x = (int)p.getX();
+            int y = (int)p.getY();
+            blockPreview[y][x] = 1;
+        }
     }
 
     public int getGameDropInterval() {
@@ -95,5 +107,25 @@ public class NotTetris extends JPanel {
         g2.setColor(Color.BLACK);
         g.drawString("Level: " + game.getLevel(), 320, 50);
         g.drawString("Rows cleared: " + game.getRowsCleared(), 320, 70);
+        g.drawString("Next piece:", 320, 150);
+        g.drawRect(320, 160, 100, 100);
+
+        int y = 175;
+
+        setNextPiece();
+        for (int[] row : blockPreview) {
+            int x = 330;
+            for (int value : row) {
+                if (value == 1) {
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(x, y, 20, 20);
+                    g2.setColor(Color.RED);
+                    g2.fillRect(x, y, 19, 19);
+                }
+                x += 20;
+            }
+            y += 20;
+        }
+
     }
 }

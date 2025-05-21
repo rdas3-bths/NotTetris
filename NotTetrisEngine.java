@@ -1,10 +1,11 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class NotTetrisEngine {
-    private int dropInterval = 1000;
     private int rowsCleared;
+    private ArrayList<Integer> speeds = new ArrayList<Integer>(Arrays.asList(1000, 1000, 900, 800, 700, 600, 500, 400));
     private final Point[][][] blockTypes = {
             // I-Piece
             {
@@ -71,7 +72,15 @@ public class NotTetrisEngine {
     private Color[][] grid;
 
     public int getDropInterval() {
-        return dropInterval;
+
+        int level = getLevel();
+        if (level < speeds.size()) {
+            return speeds.get(level);
+        }
+        else {
+            return 200;
+        }
+
     }
 
     public int getRowsCleared() {
@@ -79,14 +88,7 @@ public class NotTetrisEngine {
     }
 
     public int getLevel() {
-        return (rowsCleared / 10) + 1;
-    }
-
-    public void decreaseDropInterval() {
-        if (dropInterval > 0) {
-            dropInterval -= 100;
-        }
-
+        return (rowsCleared / 2) + 1;
     }
 
     public Color[][] getGrid() {
@@ -99,6 +101,10 @@ public class NotTetrisEngine {
 
     public int getCurrentPiece() {
         return currentPiece;
+    }
+
+    public Point[] getNextPiece() {
+        return blockTypes[nextPieces.get(0)][0];
     }
 
     public int getRotation() {
@@ -126,11 +132,14 @@ public class NotTetrisEngine {
     public void newPiece() {
         pieceOrigin = new Point(5, 2);
         rotation = 0;
-        if (nextPieces.isEmpty()) {
-            Collections.addAll(nextPieces, 0, 1, 2, 3, 4, 5, 6);
-            Collections.shuffle(nextPieces);
+        if (nextPieces.size() < 2) {
+            ArrayList<Integer> newSet = new ArrayList<Integer>();
+            Collections.addAll(newSet, 0, 1, 2, 3, 4, 5, 6);
+            Collections.shuffle(newSet);
+            nextPieces.addAll(newSet);
         }
         currentPiece = nextPieces.get(0);
+        System.out.println(nextPieces);
         nextPieces.remove(0);
     }
 
