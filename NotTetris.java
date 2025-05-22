@@ -14,6 +14,14 @@ public class NotTetris extends JPanel {
         blockPreview = new int[4][4];
     }
 
+    public void resetGame() {
+        game = new NotTetrisEngine();
+        paused = true;
+        game.init();
+        blockPreview = new int[4][4];
+        repaint();
+    }
+
     public void setNextPiece() {
         blockPreview = new int[4][4];
         Point[] next = game.getNextPiece();
@@ -79,6 +87,9 @@ public class NotTetris extends JPanel {
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
+        if (game.isGameOver()) {
+            paused = true;
+        }
         g.fillRect(0, 0, 26*12, 26*23);
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
@@ -99,7 +110,13 @@ public class NotTetris extends JPanel {
             g2.fillRect(100, 270, 100, 50);
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Courier New", 1, 15));
-            g.drawString("PAUSED", 125, 300);
+            if (game.isGameOver()) {
+                g.drawString("Game Over", 115, 300);
+            }
+            else {
+                g.drawString("PAUSED", 125, 300);
+            }
+
         }
 
         Graphics2D g2 = (Graphics2D)g;
@@ -126,6 +143,5 @@ public class NotTetris extends JPanel {
             }
             y += 20;
         }
-
     }
 }

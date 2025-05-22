@@ -47,6 +47,8 @@ public class NotTetrisMain {
                     case KeyEvent.VK_ESCAPE:
                         game.togglePause();
                         break;
+                    case KeyEvent.VK_N:
+                        game.resetGame();
                 }
             }
 
@@ -57,15 +59,14 @@ public class NotTetrisMain {
         new Thread() {
             @Override
             public void run() {
-                long currentTime = System.currentTimeMillis();
                 while (true) {
-                        long elapsedTime = System.currentTimeMillis() - currentTime;
-                        if (elapsedTime > game.getGameDropInterval()) {
-                            if (!game.isPaused()) {
-                                game.singleDrop();
-                            }
-                            currentTime = System.currentTimeMillis();
-                        }
+                    try {
+                        Thread.sleep(game.getGameDropInterval());
+                    }
+                    catch (InterruptedException e) { }
+                    if (!game.isPaused()) {
+                        game.singleDrop();
+                    }
                 }
             }
         }.start();

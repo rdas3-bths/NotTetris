@@ -70,6 +70,7 @@ public class NotTetrisEngine {
     private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
 
     private Color[][] grid;
+    private boolean gameOver;
 
     public int getDropInterval() {
 
@@ -83,12 +84,16 @@ public class NotTetrisEngine {
 
     }
 
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
     public int getRowsCleared() {
         return rowsCleared;
     }
 
     public int getLevel() {
-        return (rowsCleared / 2) + 1;
+        return (rowsCleared / 10) + 1;
     }
 
     public Color[][] getGrid() {
@@ -129,7 +134,19 @@ public class NotTetrisEngine {
         newPiece();
     }
 
+    public void checkGameOver() {
+        int checkGrid = 2;
+        for (int i = 0; i < grid.length; i++) {
+            if (grid[i][checkGrid] != null) {
+                if (grid[i][checkGrid].getRGB() == -65536) {
+                    gameOver = true;
+                }
+            }
+        }
+    }
+
     public void newPiece() {
+        checkGameOver();
         pieceOrigin = new Point(5, 2);
         rotation = 0;
         if (nextPieces.size() < 2) {
@@ -139,7 +156,6 @@ public class NotTetrisEngine {
             nextPieces.addAll(newSet);
         }
         currentPiece = nextPieces.get(0);
-        System.out.println(nextPieces);
         nextPieces.remove(0);
     }
 
