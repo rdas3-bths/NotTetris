@@ -58,7 +58,9 @@ public class NotTetrisMain {
                     case KeyEvent.VK_N:
                         game.resetGame();
                     case KeyEvent.VK_SHIFT:
-                        game.holdPiece();
+                        if (!game.isPaused())
+                            game.holdPiece();
+                        break;
                 }
             }
 

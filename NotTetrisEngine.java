@@ -257,6 +257,7 @@ public class NotTetrisEngine {
     }
 
     public void holdPiece() {
+        System.out.println(heldPiece);
         if (heldPiece == -1) {
             heldPiece = this.currentPiece;
             newPiece();
