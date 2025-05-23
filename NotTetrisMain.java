@@ -3,6 +3,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class NotTetrisMain {
+    public static boolean moveLeft = false;
+    public static boolean moveRight = false;
+
     public static void main(String[] args) {
         JFrame f = new JFrame("Not Tetris");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,12 +32,17 @@ public class NotTetrisMain {
                             game.sendRotate(+1);
                         break;
                     case KeyEvent.VK_A:
-                        if (!game.isPaused())
+                        if (!game.isPaused()) {
                             game.sendMove(-1);
+                            moveLeft = true;
+                        }
                         break;
                     case KeyEvent.VK_D:
-                        if (!game.isPaused())
+                        if (!game.isPaused()) {
                             game.sendMove(+1);
+                            moveRight = true;
+                        }
+
                         break;
                     case KeyEvent.VK_SPACE:
                         if (!game.isPaused())
@@ -49,10 +57,18 @@ public class NotTetrisMain {
                         break;
                     case KeyEvent.VK_N:
                         game.resetGame();
+                    case KeyEvent.VK_SHIFT:
+                        game.holdPiece();
                 }
             }
 
             public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_A) {
+                    moveLeft = false;
+                }
+                if (e.getKeyCode() == KeyEvent.VK_D) {
+                    moveRight = false;
+                }
             }
         });
 

@@ -66,11 +66,45 @@ public class NotTetrisEngine {
 
     private Point pieceOrigin;
     private int currentPiece;
+    private int heldPiece = -1;
     private int rotation;
     private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
 
     private Color[][] grid;
     private boolean gameOver;
+    private int[][] blockPreview = new int[4][4];
+    private int[][] heldPiecePreview = new int[4][4];
+
+    public void setNextPiece() {
+        blockPreview = new int[4][4];
+        Point[] next = this.getNextPiece();
+        for (Point p : next) {
+            int x = (int)p.getX();
+            int y = (int)p.getY();
+            blockPreview[y][x] = 1;
+        }
+    }
+
+    public void setHeldPiece() {
+        if (heldPiece != -1) {
+            heldPiecePreview = new int[4][4];
+            Point[] next = this.getHeldPiecePoint();
+            for (Point p : next) {
+                int x = (int)p.getX();
+                int y = (int)p.getY();
+                heldPiecePreview[y][x] = 1;
+            }
+        }
+
+    }
+
+    public int[][] getHeldPiecePreview() {
+        return heldPiecePreview;
+    }
+
+    public int[][] getBlockPreview() {
+        return blockPreview;
+    }
 
     public int getDropInterval() {
 
@@ -108,8 +142,14 @@ public class NotTetrisEngine {
         return currentPiece;
     }
 
+    public int getHeldPiece() { return heldPiece; }
+
     public Point[] getNextPiece() {
         return blockTypes[nextPieces.get(0)][0];
+    }
+
+    public Point[] getHeldPiecePoint() {
+        return blockTypes[heldPiece][0];
     }
 
     public int getRotation() {
@@ -121,6 +161,9 @@ public class NotTetrisEngine {
     }
 
     public void init() {
+        blockPreview = new int[4][4];
+        heldPiecePreview = new int[4][4];
+        heldPiece = -1;
         grid = new Color[12][24];
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
@@ -135,7 +178,7 @@ public class NotTetrisEngine {
     }
 
     public void checkGameOver() {
-        int checkGrid = 2;
+        int checkGrid = 0;
         for (int i = 0; i < grid.length; i++) {
             if (grid[i][checkGrid] != null) {
                 if (grid[i][checkGrid].getRGB() == -65536) {
@@ -147,7 +190,7 @@ public class NotTetrisEngine {
 
     public void newPiece() {
         checkGameOver();
-        pieceOrigin = new Point(5, 2);
+        pieceOrigin = new Point(5, 0);
         rotation = 0;
         if (nextPieces.size() < 2) {
             ArrayList<Integer> newSet = new ArrayList<Integer>();
@@ -211,6 +254,18 @@ public class NotTetrisEngine {
         }
         clearRows();
         newPiece();
+    }
+
+    public void holdPiece() {
+        if (heldPiece == -1) {
+            heldPiece = this.currentPiece;
+            newPiece();
+        }
+        else {
+            int swap = heldPiece;
+            heldPiece = this.currentPiece;
+            this.currentPiece = swap;
+        }
     }
 
     public void deleteRow(int row) {

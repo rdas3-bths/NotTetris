@@ -5,31 +5,18 @@ public class NotTetris extends JPanel {
 
     private NotTetrisEngine game = new NotTetrisEngine();
     private boolean paused;
-    private int[][] blockPreview;
 
     public NotTetris() {
         super();
         paused = true;
         game.init();
-        blockPreview = new int[4][4];
     }
 
     public void resetGame() {
         game = new NotTetrisEngine();
         paused = true;
         game.init();
-        blockPreview = new int[4][4];
         repaint();
-    }
-
-    public void setNextPiece() {
-        blockPreview = new int[4][4];
-        Point[] next = game.getNextPiece();
-        for (Point p : next) {
-            int x = (int)p.getX();
-            int y = (int)p.getY();
-            blockPreview[y][x] = 1;
-        }
     }
 
     public int getGameDropInterval() {
@@ -65,6 +52,11 @@ public class NotTetris extends JPanel {
         repaint();
     }
 
+    public void holdPiece() {
+        game.holdPiece();
+        repaint();
+    }
+
     // Draw the falling piece
     private void drawPiece(Graphics g) {
         g.setColor(Color.GRAY);
@@ -94,7 +86,7 @@ public class NotTetris extends JPanel {
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
                 g.setColor(game.getGrid()[i][j]);
-                g.fillRect(26*i, 26*j, 25, 25);
+                g.fill3DRect(26*i, 26*j, 25, 25, true);
             }
         }
 
@@ -129,8 +121,28 @@ public class NotTetris extends JPanel {
 
         int y = 175;
 
-        setNextPiece();
-        for (int[] row : blockPreview) {
+        game.setNextPiece();
+        for (int[] row : game.getBlockPreview()) {
+            int x = 330;
+            for (int value : row) {
+                if (value == 1) {
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(x, y, 20, 20);
+                    g2.setColor(Color.RED);
+                    g2.fillRect(x, y, 19, 19);
+                }
+                x += 20;
+            }
+            y += 20;
+        }
+
+        g2.setColor(Color.BLACK);
+        g.drawString("Saved piece:", 320, 300);
+        g.drawRect(320, 320, 100, 100);
+
+        game.setHeldPiece();
+        y = 325;
+        for (int[] row : game.getHeldPiecePreview()) {
             int x = 330;
             for (int value : row) {
                 if (value == 1) {
