@@ -1,4 +1,8 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,9 +68,11 @@ public class NotTetrisEngine {
             }
     };
 
+    private BufferedImage tileImage;
+    private BufferedImage smallTileImage;
     private Point pieceOrigin;
     private int currentPiece;
-    private int heldPiece = -1;
+    private int heldPiece;
     private int rotation;
     private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
 
@@ -74,6 +80,25 @@ public class NotTetrisEngine {
     private boolean gameOver;
     private int[][] blockPreview = new int[4][4];
     private int[][] heldPiecePreview = new int[4][4];
+
+    public NotTetrisEngine() {
+        blockPreview = new int[4][4];
+        heldPiecePreview = new int[4][4];
+        heldPiece = -1;
+        tileImage = loadImage("tiles/Blue.png");
+        smallTileImage = loadImage("tiles/Blue-Small.png");
+        grid = new Color[12][24];
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 23; j++) {
+                if (i == 0 || i == 11 || j == 22) {
+                    grid[i][j] = Color.BLACK;
+                } else {
+                    grid[i][j] = Color.WHITE;
+                }
+            }
+        }
+        newPiece();
+    }
 
     public void setNextPiece() {
         blockPreview = new int[4][4];
@@ -160,21 +185,12 @@ public class NotTetrisEngine {
         return pieceOrigin;
     }
 
-    public void init() {
-        blockPreview = new int[4][4];
-        heldPiecePreview = new int[4][4];
-        heldPiece = -1;
-        grid = new Color[12][24];
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 23; j++) {
-                if (i == 0 || i == 11 || j == 22) {
-                    grid[i][j] = Color.BLACK;
-                } else {
-                    grid[i][j] = Color.WHITE;
-                }
-            }
-        }
-        newPiece();
+    public BufferedImage getTileImage() {
+        return tileImage;
+    }
+
+    public BufferedImage getSmallTileImage() {
+        return smallTileImage;
     }
 
     public void checkGameOver() {
@@ -257,7 +273,6 @@ public class NotTetrisEngine {
     }
 
     public void holdPiece() {
-        System.out.println(heldPiece);
         if (heldPiece == -1) {
             heldPiece = this.currentPiece;
             newPiece();
@@ -266,6 +281,18 @@ public class NotTetrisEngine {
             int swap = heldPiece;
             heldPiece = this.currentPiece;
             this.currentPiece = swap;
+        }
+    }
+
+    public BufferedImage loadImage(String fileName) {
+        try {
+            BufferedImage image;
+            image = ImageIO.read(new File(fileName));
+            return image;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

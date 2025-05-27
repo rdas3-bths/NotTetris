@@ -3,19 +3,18 @@ import javax.swing.JPanel;
 
 public class NotTetris extends JPanel {
 
-    private NotTetrisEngine game = new NotTetrisEngine();
+    private NotTetrisEngine game;
     private boolean paused;
 
     public NotTetris() {
         super();
         paused = true;
-        game.init();
+        game = new NotTetrisEngine();
     }
 
     public void resetGame() {
         game = new NotTetrisEngine();
         paused = true;
-        game.init();
         repaint();
     }
 
@@ -61,17 +60,17 @@ public class NotTetris extends JPanel {
     private void drawPiece(Graphics g) {
         g.setColor(Color.GRAY);
         for (Point p : game.getBlockTypes()[game.getCurrentPiece()][game.getRotation()]) {
-            g.fillRect((p.x + game.getPieceOrigin().x) * 26,
-                    (p.y + game.checkTheoreticalPos()) * 26,
-                    25, 25);
+            int drawX = (p.x + game.getPieceOrigin().x) * 26;
+            int drawY = (p.y + game.checkTheoreticalPos()) * 26;
+            g.fillRect(drawX, drawY, 25, 25);
         }
 
         g.setColor(Color.red);
         for (Point p : game.getBlockTypes()[game.getCurrentPiece()][game.getRotation()]) {
+            int drawX = (p.x + game.getPieceOrigin().x) * 26;
+            int drawY = (p.y + game.getPieceOrigin().y) * 26;
+            g.drawImage(game.getTileImage(), drawX, drawY, null);
 
-            g.fillRect((p.x + game.getPieceOrigin().x) * 26,
-                    (p.y + game.getPieceOrigin().y) * 26,
-                    25, 25);
         }
 
     }
@@ -85,8 +84,14 @@ public class NotTetris extends JPanel {
         g.fillRect(0, 0, 26*12, 26*23);
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
-                g.setColor(game.getGrid()[i][j]);
-                g.fill3DRect(26*i, 26*j, 25, 25, true);
+                Color c = game.getGrid()[i][j];
+                g.setColor(c);
+                if (c.getRGB() == -65536) {
+                    g.drawImage(game.getTileImage(), 26*i, 26*j, null);
+                }
+                else {
+                    g.fill3DRect(26*i, 26*j, 25, 25, true);
+                }
             }
         }
 
@@ -126,10 +131,7 @@ public class NotTetris extends JPanel {
             int x = 330;
             for (int value : row) {
                 if (value == 1) {
-                    g2.setColor(Color.BLACK);
-                    g2.drawRect(x, y, 20, 20);
-                    g2.setColor(Color.RED);
-                    g2.fillRect(x, y, 19, 19);
+                    g.drawImage(game.getSmallTileImage(), x, y, null);
                 }
                 x += 20;
             }
@@ -146,10 +148,7 @@ public class NotTetris extends JPanel {
             int x = 330;
             for (int value : row) {
                 if (value == 1) {
-                    g2.setColor(Color.BLACK);
-                    g2.drawRect(x, y, 20, 20);
-                    g2.setColor(Color.RED);
-                    g2.fillRect(x, y, 19, 19);
+                    g.drawImage(game.getSmallTileImage(), x, y, null);
                 }
                 x += 20;
             }
