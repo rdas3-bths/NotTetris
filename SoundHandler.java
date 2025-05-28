@@ -1,0 +1,36 @@
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+
+public class SoundHandler {
+
+    private float sound;
+    private FloatControl sound1Control, sound2Control;
+    private Clip sound1, sound2;
+
+    public SoundHandler() throws LineUnavailableException, UnsupportedAudioFileException, IOException {
+        sound1 = AudioSystem.getClip();
+        sound2 = AudioSystem.getClip();
+        sound1.open(AudioSystem.getAudioInputStream(new File("sounds/blockdrop.wav").getAbsoluteFile()));
+        sound2.open(AudioSystem.getAudioInputStream(new File("sounds/lineclear.wav").getAbsoluteFile()));
+        sound = 5.0f;
+        sound1Control = (FloatControl) sound1.getControl((FloatControl.Type.MASTER_GAIN));
+        sound2Control = (FloatControl) sound2.getControl((FloatControl.Type.MASTER_GAIN));
+        update();
+    }
+
+    public void update() {
+        sound1Control.setValue(sound);
+        sound2Control.setValue(sound);
+    }
+
+    public void playSound1() {
+        sound1.setMicrosecondPosition(200000);
+        sound1.start();
+    }
+
+    public void playSound2() {
+        sound2.setMicrosecondPosition(450000);
+        sound2.start();
+    }
+}
