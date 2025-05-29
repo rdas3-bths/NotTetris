@@ -156,12 +156,13 @@ public class NotTetris extends JPanel {
         }
 
         if (paused) {
-            g.drawRect(315, 430, 165, 100);
+            g.drawRect(315, 430, 175, 100);
             g.drawString("Controls: ", 320, 450);
             g.drawString("Use WASD:", 320, 465);
             g.drawString("W to rotate", 320, 480);
             g.drawString("Alt to slow drop", 320, 495);
             g.drawString("Space to hard drop", 320, 510);
+            g.drawString("Shift to hold piece", 320, 525);
         }
 
     }
