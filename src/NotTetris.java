@@ -74,31 +74,8 @@ public class NotTetris extends JPanel {
         }
 
     }
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        if (game.isGameOver()) {
-            paused = true;
-        }
-        g.fillRect(0, 0, 26*12, 26*23);
-        for (int i = 0; i < 12; i++) {
-            for (int j = 0; j < 23; j++) {
-                Color c = game.getGrid()[i][j];
-                g.setColor(c);
-                if (c.getRGB() == -65536) {
-                    g.drawImage(game.getTileImage(), 26*i, 26*j, null);
-                }
-                else {
-                    g.fill3DRect(26*i, 26*j, 25, 25, true);
-                }
-            }
-        }
 
-        g.setColor(Color.WHITE);
-
-        drawPiece(g);
-
+    public void drawPauseBox(Graphics g) {
         if (paused) {
             Graphics2D g2 = (Graphics2D)g;
             g2.setColor(Color.BLACK);
@@ -115,7 +92,23 @@ public class NotTetris extends JPanel {
             }
 
         }
+    }
 
+    public void drawGameControls(Graphics g) {
+        if (paused) {
+            g.drawRect(315, 430, 175, 100);
+            g.drawString("Controls: ", 320, 450);
+            g.drawString("Use WASD:", 320, 465);
+            g.drawString("W to rotate", 320, 480);
+            g.drawString("Alt to slow drop", 320, 495);
+            g.drawString("Space to hard drop", 320, 510);
+            g.drawString("Shift to hold piece", 320, 525);
+
+            g.drawString("ESC to pause/un-pause", 320, 570);
+        }
+    }
+
+    public void drawPreviewPieces(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
         g2.setFont(new Font("Courier New", 1, 15));
         g2.setColor(Color.BLACK);
@@ -154,16 +147,38 @@ public class NotTetris extends JPanel {
             }
             y += 20;
         }
+    }
 
-        if (paused) {
-            g.drawRect(315, 430, 175, 100);
-            g.drawString("Controls: ", 320, 450);
-            g.drawString("Use WASD:", 320, 465);
-            g.drawString("W to rotate", 320, 480);
-            g.drawString("Alt to slow drop", 320, 495);
-            g.drawString("Space to hard drop", 320, 510);
-            g.drawString("Shift to hold piece", 320, 525);
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        if (game.isGameOver()) {
+            paused = true;
         }
+        g.fillRect(0, 0, 26*12, 26*23);
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 23; j++) {
+                Color c = game.getGrid()[i][j];
+                g.setColor(c);
+                if (c.getRGB() == -65536) {
+                    g.drawImage(game.getTileImage(), 26*i, 26*j, null);
+                }
+                else {
+                    g.fill3DRect(26*i, 26*j, 25, 25, true);
+                }
+            }
+        }
+
+        g.setColor(Color.WHITE);
+
+        drawPiece(g);
+
+        drawPauseBox(g);
+
+        drawPreviewPieces(g);
+
+        drawGameControls(g);
 
     }
 }
