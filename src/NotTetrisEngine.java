@@ -2,10 +2,13 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Scanner;
 
 public class NotTetrisEngine {
     private int rowsCleared;
@@ -78,14 +81,16 @@ public class NotTetrisEngine {
 
     private Color[][] grid;
     private boolean gameOver;
-    private int[][] blockPreview = new int[4][4];
-    private int[][] heldPiecePreview = new int[4][4];
-    SoundHandler s;
+    private int[][] blockPreview;
+    private int[][] heldPiecePreview;
+    private SoundHandler s;
+    private int highScore;
 
     public NotTetrisEngine() {
         blockPreview = new int[4][4];
         heldPiecePreview = new int[4][4];
         heldPiece = -1;
+        loadHighScore();
         tileImage = loadImage("tiles/Blue.png");
         smallTileImage = loadImage("tiles/Blue-Small.png");
         grid = new Color[12][24];
@@ -107,6 +112,39 @@ public class NotTetrisEngine {
         catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
+    public void loadHighScore() {
+        File f = new File("data/highscore");
+        try {
+            Scanner scan = new Scanner(f);
+            while (scan.hasNextLine()) {
+                String score = scan.nextLine();
+                highScore = Integer.parseInt(score);
+            }
+            scan.close();
+        }
+        catch (FileNotFoundException fn) {
+            System.out.println("File not found");
+            highScore = 0;
+        }
+    }
+
+    public void saveHighScore(int newHighScore) {
+        try {
+            FileWriter f = new FileWriter("data/highscore");
+            f.write(newHighScore + "");
+            f.close();
+        }
+        catch (Exception e) {
+            System.out.println("Could not save high score");
+        }
+
 
     }
 

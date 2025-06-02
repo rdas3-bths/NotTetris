@@ -13,6 +13,10 @@ public class NotTetris extends JPanel {
     }
 
     public void resetGame() {
+        int currentScore = game.getRowsCleared();
+        if (currentScore > game.getHighScore()) {
+            game.saveHighScore(currentScore);
+        }
         game = new NotTetrisEngine();
         paused = true;
         repaint();
@@ -114,7 +118,9 @@ public class NotTetris extends JPanel {
         g2.setColor(Color.BLACK);
         g.drawString("Level: " + game.getLevel(), 320, 50);
         g.drawString("Rows cleared: " + game.getRowsCleared(), 320, 70);
+        g.drawString("High score: " + game.getHighScore(), 320, 90);
         g.drawString("Next piece:", 320, 150);
+
         g.drawRect(320, 160, 100, 100);
 
         int y = 175;
