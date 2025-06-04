@@ -69,7 +69,6 @@ public class NotTetris extends JPanel {
             g.fillRect(drawX, drawY, 25, 25);
         }
 
-        g.setColor(Color.red);
         for (Point p : game.getBlockTypes()[game.getCurrentPiece()][game.getRotation()]) {
             int drawX = (p.x + game.getPieceOrigin().x) * 26;
             int drawY = (p.y + game.getPieceOrigin().y) * 26;
@@ -167,7 +166,7 @@ public class NotTetris extends JPanel {
             for (int j = 0; j < 23; j++) {
                 Color c = game.getGrid()[i][j];
                 g.setColor(c);
-                if (c.getRGB() == -65536) {
+                if (game.getGrid()[i][j].equals(Color.RED)) {
                     g.drawImage(game.getTileImage(), 26*i, 26*j, null);
                 }
                 else {

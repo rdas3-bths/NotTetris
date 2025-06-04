@@ -83,7 +83,7 @@ public class NotTetrisEngine {
     private boolean gameOver;
     private int[][] blockPreview;
     private int[][] heldPiecePreview;
-    private SoundHandler s;
+    private SoundHandler soundManager;
     private int highScore;
 
     public NotTetrisEngine() {
@@ -106,8 +106,8 @@ public class NotTetrisEngine {
         newPiece();
 
         try {
-            s = new SoundHandler();
-            s.playSound3();
+            soundManager = new SoundHandler();
+            soundManager.playSound3();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -317,9 +317,9 @@ public class NotTetrisEngine {
             grid[pieceOrigin.x + p.x][pieceOrigin.y + p.y] = Color.red;
         }
         boolean check = clearRows();
-        s.playSound1();
+        soundManager.playSound1();
         if (check)
-            s.playSound2();
+            soundManager.playSound2();
 
 
         newPiece();
