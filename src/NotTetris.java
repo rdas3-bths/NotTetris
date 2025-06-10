@@ -63,16 +63,16 @@ public class NotTetris extends JPanel {
     // Draw the falling piece
     private void drawPiece(Graphics g) {
         g.setColor(Color.GRAY);
-        for (Point p : game.getBlockTypes()[game.getCurrentPiece()][game.getRotation()]) {
+        for (Point p : game.getBlockPoints()) {
             int drawX = (p.x + game.getPieceOrigin().x) * 26;
             int drawY = (p.y + game.checkTheoreticalPos()) * 26;
             g.fillRect(drawX, drawY, 25, 25);
         }
 
-        for (Point p : game.getBlockTypes()[game.getCurrentPiece()][game.getRotation()]) {
+        for (Point p : game.getBlockPoints()) {
             int drawX = (p.x + game.getPieceOrigin().x) * 26;
             int drawY = (p.y + game.getPieceOrigin().y) * 26;
-            g.drawImage(game.getTileImage(), drawX, drawY, null);
+            g.drawImage(Block.getTileImageByType(game.getCurrentPiece()), drawX, drawY, null);
 
         }
 
@@ -164,9 +164,14 @@ public class NotTetris extends JPanel {
         g.fillRect(0, 0, 26*12, 26*23);
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
-                Color c = game.getGrid()[i][j];
-                g.setColor(c);
-                if (game.getGrid()[i][j].equals(Color.RED)) {
+                int c = game.getNumberGrid()[i][j];
+                if (c == 8) {
+                    g.setColor(Color.WHITE);
+                }
+                else {
+                    g.setColor(Color.BLACK);
+                }
+                if (game.getNumberGrid()[i][j] >= 0 && game.getNumberGrid()[i][j] <= 6) {
                     g.drawImage(game.getTileImage(), 26*i, 26*j, null);
                 }
                 else {

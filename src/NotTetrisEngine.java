@@ -12,64 +12,8 @@ import java.util.Scanner;
 
 public class NotTetrisEngine {
     private int rowsCleared;
+    private Block[] allBlocks;
     private ArrayList<Integer> speeds = new ArrayList<Integer>(Arrays.asList(1000, 1000, 900, 800, 700, 600, 500, 400));
-    private final Point[][][] blockTypes = {
-            // I-Piece
-            {
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(1, 3) }
-            },
-
-            // J-Piece
-            {
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 0) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 0) }
-            },
-
-            // L-Piece
-            {
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(2, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(0, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(0, 0) },
-                    { new Point(1, 0), new Point(1, 1), new Point(1, 2), new Point(2, 0) }
-            },
-
-            // Square-Piece
-            {
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1) }
-            },
-
-            // S-Piece
-            {
-                    { new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) },
-                    { new Point(1, 0), new Point(2, 0), new Point(0, 1), new Point(1, 1) },
-                    { new Point(0, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) }
-            },
-
-            // T-Piece
-            {
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(1, 2) },
-                    { new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(1, 2) },
-                    { new Point(1, 0), new Point(1, 1), new Point(2, 1), new Point(1, 2) }
-            },
-
-            // Z-Piece
-            {
-                    { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2) },
-                    { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) },
-                    { new Point(1, 0), new Point(0, 1), new Point(1, 1), new Point(0, 2) }
-            }
-    };
 
     private BufferedImage tileImage;
     private BufferedImage smallTileImage;
@@ -79,7 +23,7 @@ public class NotTetrisEngine {
     private int rotation;
     private ArrayList<Integer> nextPieces = new ArrayList<Integer>();
 
-    private Color[][] grid;
+    private int[][] numberGrid;
     private boolean gameOver;
     private int[][] blockPreview;
     private int[][] heldPiecePreview;
@@ -89,17 +33,25 @@ public class NotTetrisEngine {
     public NotTetrisEngine() {
         blockPreview = new int[4][4];
         heldPiecePreview = new int[4][4];
+        allBlocks = new Block[7];
+        for (int i = 1; i <= 7; i++) {
+            allBlocks[i-1] = new Block(i);
+        }
         heldPiece = -1;
         loadHighScore();
         tileImage = loadImage("tiles/Blue.png");
         smallTileImage = loadImage("tiles/Blue-Small.png");
-        grid = new Color[12][24];
+        numberGrid = new int[12][24];
+        for (int i = 0; i < numberGrid.length; i++) {
+            for (int j = 0; j < numberGrid[0].length; j++) {
+                numberGrid[i][j] = 9;
+            }
+        }
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 23; j++) {
                 if (i == 0 || i == 11 || j == 22) {
-                    grid[i][j] = Color.BLACK;
                 } else {
-                    grid[i][j] = Color.WHITE;
+                    numberGrid[i][j] = 8;
                 }
             }
         }
@@ -203,30 +155,24 @@ public class NotTetrisEngine {
         return (rowsCleared / 10) + 1;
     }
 
-    public Color[][] getGrid() {
-        return grid;
+    public int[][] getNumberGrid() {
+        return numberGrid;
     }
 
-    public Point[][][] getBlockTypes() {
-        return blockTypes;
+    public Point[] getBlockPoints() {
+        return allBlocks[currentPiece].getBlocks()[rotation];
     }
 
     public int getCurrentPiece() {
         return currentPiece;
     }
 
-    public int getHeldPiece() { return heldPiece; }
-
     public Point[] getNextPiece() {
-        return blockTypes[nextPieces.get(0)][0];
+        return allBlocks[nextPieces.get(0)].getBlocks()[0];
     }
 
     public Point[] getHeldPiecePoint() {
-        return blockTypes[heldPiece][0];
-    }
-
-    public int getRotation() {
-        return rotation;
+        return allBlocks[heldPiece].getBlocks()[0];
     }
 
     public Point getPieceOrigin() {
@@ -243,11 +189,9 @@ public class NotTetrisEngine {
 
     public void checkGameOver() {
         int checkGrid = 0;
-        for (int i = 0; i < grid.length; i++) {
-            if (grid[i][checkGrid] != null) {
-                if (grid[i][checkGrid].getRGB() == -65536) {
-                    gameOver = true;
-                }
+        for (int i = 0; i < numberGrid.length; i++) {
+            if (numberGrid[i][checkGrid] >= 0 && numberGrid[i][checkGrid] <= 6) {
+                gameOver = true;
             }
         }
     }
@@ -267,8 +211,8 @@ public class NotTetrisEngine {
     }
 
     private boolean collidesAt(int x, int y, int rotation) {
-        for (Point p : blockTypes[currentPiece][rotation]) {
-            if (grid[p.x + x][p.y + y] != Color.WHITE) {
+        for (Point p : allBlocks[currentPiece].getBlocks()[rotation]) {
+            if (numberGrid[p.x + x][p.y + y] != 8) {
                 return false;
             }
         }
@@ -312,9 +256,18 @@ public class NotTetrisEngine {
         }
     }
 
+    public void displayNumberGrid() {
+        for (int i = 0; i < numberGrid[0].length; i++) {
+            for (int j = 0; j < numberGrid.length; j++) {
+                System.out.print(numberGrid[j][i] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public void fixToGrid() {
-        for (Point p : blockTypes[currentPiece][rotation]) {
-            grid[pieceOrigin.x + p.x][pieceOrigin.y + p.y] = Color.red;
+        for (Point p : allBlocks[currentPiece].getBlocks()[rotation]) {
+            numberGrid[pieceOrigin.x + p.x][pieceOrigin.y + p.y] = currentPiece;
         }
         boolean check = clearRows();
         soundManager.playSound1();
@@ -352,7 +305,7 @@ public class NotTetrisEngine {
     public void deleteRow(int row) {
         for (int j = row-1; j > 0; j--) {
             for (int i = 1; i < 11; i++) {
-                grid[i][j+1] = grid[i][j];
+                numberGrid[i][j+1] = numberGrid[i][j];
             }
         }
         rowsCleared++;
@@ -365,7 +318,7 @@ public class NotTetrisEngine {
         for (int j = 21; j > 0; j--) {
             gap = false;
             for (int i = 1; i < 11; i++) {
-                if (grid[i][j] == Color.WHITE) {
+                if (numberGrid[i][j] == 8) {
                     gap = true;
                     break;
                 }
@@ -381,10 +334,10 @@ public class NotTetrisEngine {
 
     public int checkTheoreticalPos(){
         ArrayList<Integer> theor = new ArrayList<>();
-        for (Point p : blockTypes[currentPiece][rotation]) {
+        for (Point p : allBlocks[currentPiece].getBlocks()[rotation]) {
             int theorVal = 0;
             for(int j = p.y + pieceOrigin.y + 1; j < 22; j++){
-                if(grid[p.x + pieceOrigin.x][j]==Color.WHITE){
+                if(numberGrid[p.x + pieceOrigin.x][j]==8){
                     theorVal++;
                 }else break;
             }
