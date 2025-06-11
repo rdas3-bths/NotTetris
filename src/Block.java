@@ -109,6 +109,27 @@ public class Block {
     }
 
     public static BufferedImage getTileImageByType(int type) {
-        return loadImage("tiles/Blue.png");
+
+        if (type == 0)  return loadImage("tiles/Blue.png");
+        if (type == 1)  return loadImage("tiles/Cyan.png");
+        if (type == 2)  return loadImage("tiles/Green.png");
+        if (type == 3)  return loadImage("tiles/Orange.png");
+        if (type == 4)  return loadImage("tiles/Purple.png");
+        if (type == 5)  return loadImage("tiles/Red.png");
+        if (type == 6)  return loadImage("tiles/Yellow.png");
+
+        return null;
+    }
+
+    public static BufferedImage getSmallTileImageByType(int type) {
+        if (type == 0)  return loadImage("tiles/Blue-Small.png");
+        if (type == 1)  return loadImage("tiles/Cyan-Small.png");
+        if (type == 2)  return loadImage("tiles/Green-Small.png");
+        if (type == 3)  return loadImage("tiles/Orange-Small.png");
+        if (type == 4)  return loadImage("tiles/Purple-Small.png");
+        if (type == 5)  return loadImage("tiles/Red-Small.png");
+        if (type == 6)  return loadImage("tiles/Yellow-Small.png");
+
+        return null;
     }
 }

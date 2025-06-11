@@ -128,8 +128,8 @@ public class NotTetris extends JPanel {
         for (int[] row : game.getBlockPreview()) {
             int x = 330;
             for (int value : row) {
-                if (value == 1) {
-                    g.drawImage(game.getSmallTileImage(), x, y, null);
+                if (value != -1) {
+                    g.drawImage(Block.getSmallTileImageByType(value), x, y, null);
                 }
                 x += 20;
             }
@@ -145,8 +145,8 @@ public class NotTetris extends JPanel {
         for (int[] row : game.getHeldPiecePreview()) {
             int x = 330;
             for (int value : row) {
-                if (value == 1) {
-                    g.drawImage(game.getSmallTileImage(), x, y, null);
+                if (value != -1) {
+                    g.drawImage(Block.getSmallTileImageByType(value), x, y, null);
                 }
                 x += 20;
             }
@@ -172,7 +172,7 @@ public class NotTetris extends JPanel {
                     g.setColor(Color.BLACK);
                 }
                 if (game.getNumberGrid()[i][j] >= 0 && game.getNumberGrid()[i][j] <= 6) {
-                    g.drawImage(game.getTileImage(), 26*i, 26*j, null);
+                    g.drawImage(Block.getTileImageByType(game.getNumberGrid()[i][j]), 26*i, 26*j, null);
                 }
                 else {
                     g.fill3DRect(26*i, 26*j, 25, 25, true);

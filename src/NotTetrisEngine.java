@@ -15,8 +15,6 @@ public class NotTetrisEngine {
     private Block[] allBlocks;
     private ArrayList<Integer> speeds = new ArrayList<Integer>(Arrays.asList(1000, 1000, 900, 800, 700, 600, 500, 400));
 
-    private BufferedImage tileImage;
-    private BufferedImage smallTileImage;
     private Point pieceOrigin;
     private int currentPiece;
     private int heldPiece;
@@ -33,14 +31,17 @@ public class NotTetrisEngine {
     public NotTetrisEngine() {
         blockPreview = new int[4][4];
         heldPiecePreview = new int[4][4];
+        for (int i = 0; i < heldPiecePreview.length; i++) {
+            for (int j = 0; j < heldPiecePreview[0].length; j++) {
+                heldPiecePreview[i][j] = -1;
+            }
+        }
         allBlocks = new Block[7];
         for (int i = 1; i <= 7; i++) {
             allBlocks[i-1] = new Block(i);
         }
         heldPiece = -1;
         loadHighScore();
-        tileImage = loadImage("tiles/Blue.png");
-        smallTileImage = loadImage("tiles/Blue-Small.png");
         numberGrid = new int[12][24];
         for (int i = 0; i < numberGrid.length; i++) {
             for (int j = 0; j < numberGrid[0].length; j++) {
@@ -102,22 +103,32 @@ public class NotTetrisEngine {
 
     public void setNextPiece() {
         blockPreview = new int[4][4];
+        for (int i = 0; i < blockPreview.length; i++) {
+            for (int j = 0; j < blockPreview[0].length; j++) {
+                blockPreview[i][j] = -1;
+            }
+        }
         Point[] next = this.getNextPiece();
         for (Point p : next) {
             int x = (int)p.getX();
             int y = (int)p.getY();
-            blockPreview[y][x] = 1;
+            blockPreview[y][x] = nextPieces.get(0);
         }
     }
 
     public void setHeldPiece() {
         if (heldPiece != -1) {
             heldPiecePreview = new int[4][4];
+            for (int i = 0; i < heldPiecePreview.length; i++) {
+                for (int j = 0; j < heldPiecePreview[0].length; j++) {
+                    heldPiecePreview[i][j] = -1;
+                }
+            }
             Point[] next = this.getHeldPiecePoint();
             for (Point p : next) {
                 int x = (int)p.getX();
                 int y = (int)p.getY();
-                heldPiecePreview[y][x] = 1;
+                heldPiecePreview[y][x] = heldPiece;
             }
         }
 
@@ -177,14 +188,6 @@ public class NotTetrisEngine {
 
     public Point getPieceOrigin() {
         return pieceOrigin;
-    }
-
-    public BufferedImage getTileImage() {
-        return tileImage;
-    }
-
-    public BufferedImage getSmallTileImage() {
-        return smallTileImage;
     }
 
     public void checkGameOver() {
